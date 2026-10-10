@@ -1,0 +1,15 @@
+# Store every file byte-for-byte as exported from the original STM32CubeIDE
+# project. Most sources/configs use CRLF (Windows), a few use LF; disabling
+# end-of-line conversion keeps clones identical to the original files
+# regardless of each user's core.autocrlf setting.
+* -text
+
+# Binary files (no diff/merge)
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.pdf    binary
+*.elf    binary
+*.bin    binary
+*.hex    binary
