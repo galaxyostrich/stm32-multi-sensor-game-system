@@ -1,6 +1,6 @@
 # STM32 Multi-Sensor Game System
 
-Bare-metal firmware for the STMicroelectronics **B-L4S5I-IOT01A** Discovery kit (STM32L4S5VI, Arm Cortex-M4F). It turns the board's on-board MEMS and environmental sensors, plus an external sound sensor, 8×8 LED matrix and buzzer, into two interactive games. It is written in Embedded C on the STM32 HAL and the board BSP, and runs as a single non-blocking super-loop with interrupt-driven button input.
+Bare-metal firmware for the STMicroelectronics **B-L4S5I-IOT01A** Discovery kit (STM32L4S5VI, Arm Cortex-M4F). It turns the board's on-board MEMS and environmental sensors, plus an external sound sensor, 8×8 LED matrix and buzzer, into two interactive games. Both games live in **one firmware image on one board**; a double press of the user button switches between them at runtime. It is written in Embedded C on the STM32 HAL and the board BSP, and runs as a single non-blocking super-loop with interrupt-driven button input.
 
 Built as a team assignment for EE2028 at the National University of Singapore (AY2025/26 Semester 1).
 
@@ -41,7 +41,7 @@ Built as a team assignment for EE2028 at the National University of Singapore (A
   - *Double press* (two presses within 500 ms): switches between Game 1 and Game 2, clears a game-over state, and re-initialises the selected game.
   - *Single press*: confirmed once no second press arrives within 550 ms. It is used as the escape action in Game 2.
 - **Game over**: the LED matrix shows `X`, the buzzer sounds for 1 s, and LED2 toggles every 1 s until a double press.
-- **Sound detection**: the ADC is polled every 8 ms against an adaptive baseline (exponential moving average). A threshold and a refractory period reject repeated triggers.
+- **Sound detection**: `Sound_Poll()` runs its ADC step at most every 8 ms. Because one step starts a conversion and the next step reads it, a new sample is produced about every 16 ms. Each sample is compared against an adaptive baseline (exponential moving average, new = (15·old + sample)/16). A threshold and a refractory period reject repeated triggers.
 - **8×8 LED matrix**: a custom HT16K33 driver with a 36-character font (A–Z, 0–9), raw frame output, brightness control and non-blocking animations.
 - **Buzzer feedback**: an active buzzer, switched on by the game logic and switched off by a non-blocking timer in the main loop.
 - **UART output**: game state, sensor readings and events are printed on USART1 (115200 baud, 8N1).
